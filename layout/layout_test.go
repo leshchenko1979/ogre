@@ -562,3 +562,84 @@ func TestAspectRatio(t *testing.T) {
 
 	assertLayout(t, child, "child", 0, 0, 100, 50)
 }
+
+func TestBoxSizingContentBoxAddsPadding(t *testing.T) {
+	// content-box: the declared 200px is the content area, so the border box
+	// grows by the padding (2 x 50) to 300. Chromium reports 300 for this case.
+	child := NewNode(Style{
+		Width:        Pt(200),
+		Height:       Pt(40),
+		PaddingLeft:  Pt(50),
+		PaddingRight: Pt(50),
+		ContentBox:   true,
+	})
+	root := NewNode(Style{
+		Width:     Pt(400),
+		Height:    Pt(300),
+		Direction: Column,
+	}, child)
+
+	Compute(root, 400, 300)
+
+	assertLayout(t, child, "child", 0, 0, 300, 40)
+}
+
+func TestBoxSizingBorderBoxKeepsDeclaredWidth(t *testing.T) {
+	// border-box is the default: 200px covers padding, content shrinks to 100.
+	child := NewNode(Style{
+		Width:        Pt(200),
+		Height:       Pt(40),
+		PaddingLeft:  Pt(50),
+		PaddingRight: Pt(50),
+		ContentBox:   false,
+	})
+	root := NewNode(Style{
+		Width:     Pt(400),
+		Height:    Pt(300),
+		Direction: Column,
+	}, child)
+
+	Compute(root, 400, 300)
+
+	assertLayout(t, child, "child", 0, 0, 200, 40)
+}
+
+func TestBoxSizingContentBoxAddsBorders(t *testing.T) {
+	// Borders count too: 200 + 2 x 50 padding + 2 x 5 border = 310.
+	child := NewNode(Style{
+		Width:        Pt(200),
+		Height:       Pt(40),
+		PaddingLeft:  Pt(50),
+		PaddingRight: Pt(50),
+		BorderLeft:   5,
+		BorderRight:  5,
+		ContentBox:   true,
+	})
+	root := NewNode(Style{
+		Width:     Pt(400),
+		Height:    Pt(300),
+		Direction: Column,
+	}, child)
+
+	Compute(root, 400, 300)
+
+	assertLayout(t, child, "child", 0, 0, 310, 40)
+}
+
+func TestBoxSizingContentBoxWithoutPadding(t *testing.T) {
+	// No padding, no border: content-box and border-box agree on the size.
+	child := NewNode(Style{
+		Width:      Pt(200),
+		Height:     Pt(40),
+		ContentBox: true,
+	})
+	root := NewNode(Style{
+		Width:     Pt(400),
+		Height:    Pt(300),
+		Direction: Column,
+	}, child)
+
+	Compute(root, 400, 300)
+
+	assertLayout(t, child, "child", 0, 0, 200, 40)
+}
