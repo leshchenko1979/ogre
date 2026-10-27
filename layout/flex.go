@@ -60,6 +60,18 @@ func computeNode(node *Node, in layoutRun) {
 	containerWidth = clampSize(containerWidth, s.MinWidth, s.MaxWidth, in.ownerWidth)
 	containerHeight = clampSize(containerHeight, s.MinHeight, s.MaxHeight, in.ownerHeight)
 
+	// With content-box the declared width/height describe the content area, so
+	// the padding and border have to be added on top of it. The engine works in
+	// border-box internally, hence the conversion happens here, once.
+	if s.ContentBox {
+		if s.Width.IsDefined() {
+			containerWidth += bpW
+		}
+		if s.Height.IsDefined() {
+			containerHeight += bpH
+		}
+	}
+
 	if s.AspectRatio > 0 {
 		if s.Width.IsDefined() && !s.Height.IsDefined() {
 			containerHeight = containerWidth / s.AspectRatio
