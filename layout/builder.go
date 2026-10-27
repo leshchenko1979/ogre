@@ -41,14 +41,46 @@ func buildNode(pn *parse.Node, styles map[*parse.Node]*style.ComputedStyle, meas
 	}
 
 	var children []*Node
-	for _, child := range pn.Children {
-		cn := buildNode(child, styles, measureText, nodeMap)
+	for i, child := range pn.Children {
+		var cn *Node
+		if child.Type == parse.TextNode && child.LineBreak {
+			// A <br> ends the current line; the line box itself comes from the
+			// text that follows, so the break contributes no height of its own.
+			// A trailing break is the exception: it opens one more (empty) line,
+			// exactly as the browser does.
+			cn = buildBreakNode(child, styles, measureText, nodeMap, i == len(pn.Children)-1)
+		} else {
+			cn = buildNode(child, styles, measureText, nodeMap)
+		}
 		if cn != nil {
 			children = append(children, cn)
 		}
 	}
 
 	ln := NewNode(s, children...)
+	nodeMap[pn] = ln
+	return ln
+}
+
+// buildBreakNode lays out a <br>. It occupies zero width and, unless it is the
+// last child, zero height: the next text leaf supplies the line box it starts.
+func buildBreakNode(pn *parse.Node, styles map[*parse.Node]*style.ComputedStyle, measureText MeasureTextFunc, nodeMap map[*parse.Node]*Node, trailing bool) *Node {
+	cs := styles[pn]
+	if cs == nil {
+		cs = &style.ComputedStyle{}
+	}
+	if cs.Display == style.DisplayNone {
+		return nil
+	}
+
+	s := mapStyle(cs)
+	ln := NewLeaf(s, func(maxWidth, maxHeight float64) (float64, float64) {
+		if !trailing {
+			return 0, 0
+		}
+		_, h := measureText(pn, " ", cs, maxWidth)
+		return 0, h
+	})
 	nodeMap[pn] = ln
 	return ln
 }
