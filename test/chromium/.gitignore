@@ -1,0 +1,3 @@
+# Chromium writes a core dump here when it crashes on a memory-tight box.
+core
+*.core
