@@ -70,6 +70,10 @@ var Fixtures = []Fixture{
 		Width: 200, Height: 200, Text: true,
 	},
 	{
+		// Not a baseline defect: Ogre has no inline formatting context, so the
+		// swatch and the text beside it land on separate block lines. The
+		// fixture measures the symptom of that larger gap — see
+		// https://github.com/macawls/ogre/issues/43#issuecomment-6528193680
 		Name: "inline-block-baseline", File: "inline-block-baseline.html",
 		Width: 200, Height: 100, Text: true,
 		Known: "https://github.com/macawls/ogre/issues/43",
@@ -86,7 +90,6 @@ var Fixtures = []Fixture{
 	{
 		Name: "percentage-padding", File: "percentage-padding.html",
 		Width: 400, Height: 100,
-		Known: "https://github.com/macawls/ogre/issues/42",
 	},
 	{
 		Name: "grid-columns", File: "grid-columns.html",
@@ -99,7 +102,12 @@ var Fixtures = []Fixture{
 	{
 		Name: "margin-auto-center", File: "margin-auto-center.html",
 		Width: 400, Height: 100,
-		Known: "https://github.com/macawls/ogre/issues/42",
+	}, {
+		Name: "margin-auto-stretch", File: "margin-auto-stretch.html",
+		Width: 400, Height: 100,
+	}, {
+		Name: "margin-auto-left", File: "margin-auto-left.html",
+		Width: 400, Height: 100,
 	},
 	{
 		Name: "overflow-clip", File: "overflow-clip.html",
@@ -120,12 +128,14 @@ var Fixtures = []Fixture{
 	{
 		Name: "relative-offset", File: "relative-offset.html",
 		Width: 400, Height: 200,
-		Known: "https://github.com/macawls/ogre/issues/44",
+	},
+	{
+		Name: "relative-offset-subtree", File: "relative-offset-subtree.html",
+		Width: 400, Height: 200,
 	},
 	{
 		Name: "absolute-in-relative-parent", File: "absolute-in-relative-parent.html",
 		Width: 400, Height: 200,
-		Known: "https://github.com/macawls/ogre/issues/44",
 	},
 	{
 		Name: "percent-width", File: "percent-width.html",
@@ -138,7 +148,6 @@ var Fixtures = []Fixture{
 	{
 		Name: "min-max-width", File: "min-max-width.html",
 		Width: 400, Height: 100,
-		Known: "https://github.com/macawls/ogre/issues/45",
 	},
 	{
 		Name: "border-width", File: "border-width.html",
