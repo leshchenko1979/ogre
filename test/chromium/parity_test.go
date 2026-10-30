@@ -105,6 +105,45 @@ var Fixtures = []Fixture{
 		Name: "overflow-clip", File: "overflow-clip.html",
 		Width: 200, Height: 100,
 	},
+	{
+		Name: "flex-gap", File: "flex-gap.html",
+		Width: 400, Height: 100,
+	},
+	{
+		Name: "flex-justify-between", File: "flex-justify-between.html",
+		Width: 400, Height: 100,
+	},
+	{
+		Name: "absolute-explicit-corners", File: "absolute-explicit-corners.html",
+		Width: 400, Height: 200,
+	},
+	{
+		Name: "relative-offset", File: "relative-offset.html",
+		Width: 400, Height: 200,
+		Known: "https://github.com/macawls/ogre/issues/44",
+	},
+	{
+		Name: "absolute-in-relative-parent", File: "absolute-in-relative-parent.html",
+		Width: 400, Height: 200,
+		Known: "https://github.com/macawls/ogre/issues/44",
+	},
+	{
+		Name: "percent-width", File: "percent-width.html",
+		Width: 400, Height: 100,
+	},
+	{
+		Name: "min-width-block", File: "min-width-block.html",
+		Width: 400, Height: 100,
+	},
+	{
+		Name: "min-max-width", File: "min-max-width.html",
+		Width: 400, Height: 100,
+		Known: "https://github.com/macawls/ogre/issues/45",
+	},
+	{
+		Name: "border-width", File: "border-width.html",
+		Width: 400, Height: 100,
+	},
 }
 
 // renderBoth renders one fixture through Chromium and through Ogre and returns
