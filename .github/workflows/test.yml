@@ -21,3 +21,37 @@ jobs:
       - run: go test ./...
       - run: go test -race ./...
       - run: go vet ./...
+
+  # The test/ directory is its own Go module, so `go test ./...` above has never
+  # reached it. This job runs it — plain first, then the geometry parity suite,
+  # which measures Ogre against a real browser.
+  #
+  # CHROMIUM_REQUIRED=1 is what makes this a gate: without it a missing browser
+  # is a skip, and a job that skips its own subject reports green while testing
+  # nothing.
+  chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - name: Resolve Chromium
+        run: |
+          if command -v google-chrome >/dev/null || command -v chromium >/dev/null || command -v chromium-browser >/dev/null; then
+            echo "using the runner's browser: $(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          else
+            npx --yes playwright install --with-deps chromium
+            echo "CHROMIUM_BIN=$(find "$HOME/.cache/ms-playwright" -name chrome -type f | head -1)" >> "$GITHUB_ENV"
+          fi
+
+      - name: Test module
+        working-directory: test
+        run: go test ./...
+
+      - name: Geometry parity vs Chromium
+        working-directory: test
+        env:
+          CHROMIUM_REQUIRED: "1"
+        run: go test -tags chromium ./chromium/ -run TestChromiumParity -v
