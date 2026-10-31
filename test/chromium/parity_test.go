@@ -81,7 +81,14 @@ var Fixtures = []Fixture{
 	{
 		Name: "absolute-auto-bottom", File: "absolute-auto-bottom.html",
 		Width: 400, Height: 200,
-		Known: "https://github.com/macawls/ogre/issues/40",
+	},
+	{
+		Name: "absolute-auto-right", File: "absolute-auto-right.html",
+		Width: 400, Height: 200, Text: true,
+	},
+	{
+		Name: "absolute-auto-stretch", File: "absolute-auto-stretch.html",
+		Width: 400, Height: 200, Text: true,
 	},
 	{
 		Name: "flex-grow", File: "flex-grow.html",
